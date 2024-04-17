@@ -1,3 +1,4 @@
+#include <stdint.h>
 // platform independent
 typedef struct wlfs_config_t {
 	uint32_t sector_size;
@@ -18,10 +19,10 @@ typedef struct wlfs_rec_t {
 
 uint32_t wlfs_init( wlfs_config_t *config);
 uint32_t wlfs_rec_len();
-uint32_t wlfs_load(char *dst);
-uint32_t wlfs_store(char *src, uint32_t len);
+uint32_t wlfs_load(void *dst);
+uint32_t wlfs_store(void *src, uint32_t len);
 
 // platform specific functions - to be implemented externaly
-uint32_t wlfs_read( wlfs_rec_t *rec, char *dst);
-int wlfs_write( wlfs_rec_t *rec, char *src);
-int wlfs_format_and_write( wlfs_rec_t *rec, char *src);
+uint32_t wlfs_read(uint32_t offset, void *dst, uint32_t len);
+uint32_t wlfs_write( wlfs_rec_t *rec, const void *src);
+uint32_t wlfs_format_and_write( wlfs_rec_t *rec, const void *src);
