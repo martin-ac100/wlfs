@@ -1,6 +1,5 @@
 #include <string.h>
 #include "wlfs.h"
-#include "stdio.h"
 
 static wlfs_header_t cursor, cursor_last;
 static uint32_t cursor_offset, cursor_last_offset;
@@ -33,8 +32,6 @@ uint32_t wlfs_rec_len() {
 void wlfs_init( wlfs_config_t *config) {
 	wlfs_config = config;
 	HEADER_LEN = WRITE_ALIGN(sizeof(wlfs_header_t));
-	printf("HEADER_LEN = %d\n",HEADER_LEN);
-	printf("SECTOR_ALIGN = %d\n",SECTOR_ALIGN(16 + HEADER_LEN + 5));
 }
 
 uint32_t wlfs_load(void *dst) {
