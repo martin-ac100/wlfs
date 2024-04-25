@@ -1,8 +1,8 @@
 #include <stdint.h>
 // platform independent
 
-#define SECTOR_ALIGN(x) (x+wlfs_config->sector_size-1) & ~(wlfs_config->sector_size-1)
-#define WRITE_ALIGN(x) (x+wlfs_config->write_align-1) & ~(wlfs_config->write_align-1)
+#define SECTOR_ALIGN(x,y) (y+x->sector_size-1) & ~(x->sector_size-1)
+#define WRITE_ALIGN(x,y) (y+x->write_align-1) & ~(x->write_align-1)
 
 typedef struct wlfs_config_t {
 	int sector_size;

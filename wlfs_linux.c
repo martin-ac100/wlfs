@@ -11,6 +11,7 @@
 const char zeros[img_sector_size]={0};
 
 wlfs_config_t wlfs_config;
+wlfs_config_t *p_wlfs_config = &wlfs_config;
 
 #define img_len img_sector_size * img_total_sectors + img_file_offset
 char data[img_len];
@@ -25,9 +26,9 @@ uint32_t wlfs_open() {
 		wlfs_config.end = img_len-1;
 		fclose(fd);
 	}
-	wlfs_config.start = img_file_offset;
 	wlfs_config.sector_size = img_sector_size;
 	wlfs_config.write_align = img_write_align;
+	wlfs_config.start = SECTOR_ALIGN(p_wlfs_config, img_file_offset);
 	wlfs_init(&wlfs_config);
 	return wlfs_config.end;
 }
@@ -39,7 +40,7 @@ int wlfs_close() {
 		fwrite(data,1,img_len,fd);
 		fclose(fd);
 	}
-	return (int)fd;
+	return fd ? 0 : -1 ;
 }
 
 
