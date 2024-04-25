@@ -1,28 +1,30 @@
 #include <stdint.h>
 // platform independent
+
+#define SECTOR_ALIGN(x) (x+wlfs_config->sector_size-1) & ~(wlfs_config->sector_size-1)
+#define WRITE_ALIGN(x) (x+wlfs_config->write_align-1) & ~(wlfs_config->write_align-1)
+
 typedef struct wlfs_config_t {
-	uint32_t sector_size;
+	int sector_size;
+	int write_align;
+	int erase_before_write;
 	uint32_t start;
 	uint32_t end;
 } wlfs_config_t;
 
-typedef struct wlfs_rec_header_t {
+typedef struct wlfs_header_t {
 	char magic[8];
-	uint32_t version;
+	int version;
 	uint32_t len;
-} wlfs_rec_header_t;
+} wlfs_header_t;
 
-typedef struct wlfs_rec_t {
-	uint32_t offset;
-	wlfs_rec_header_t header;
-} wlfs_rec_t;
 
-uint32_t wlfs_init( wlfs_config_t *config);
+void wlfs_init( wlfs_config_t *config);
 uint32_t wlfs_rec_len();
 uint32_t wlfs_load(void *dst);
 uint32_t wlfs_store(void *src, uint32_t len);
 
 // platform specific functions - to be implemented externaly
 uint32_t wlfs_read(uint32_t offset, void *dst, uint32_t len);
-uint32_t wlfs_write( wlfs_rec_t *rec, const void *src);
-uint32_t wlfs_format_and_write( wlfs_rec_t *rec, const void *src);
+uint32_t wlfs_write(uint32_t offset, const void *src, uint32_t len);
+uint32_t wlfs_erase(uint32_t offset, uint32_t len);
