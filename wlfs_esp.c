@@ -6,7 +6,6 @@
 
 
 wlfs_config_t wlfs_config = {.sector_size=512, .write_align=16, .erase_before_write=1};
-wlfs_config_t *p_wlfs_config = &wlfs_config;
 const esp_partition_t *boot_part;
 
 uint32_t wlfs_read(uint32_t offset, void *dst, uint32_t len) {
@@ -21,7 +20,7 @@ uint32_t wlfs_erase(uint32_t offset, uint32_t len) {
 	return esp_partition_erase_range(boot_part, (size_t)offset, (size_t)len) == ESP_OK ? len : 0;
 }
 
-void app_main(void)
+wlfs_config_t * wlfs_init(void)
 {
 
 	puts("Started\n");
@@ -45,16 +44,10 @@ void app_main(void)
 	}
 	printf("partition free space offset = %x\n",offset);
 	
-	wlfs_config.start = SECTOR_ALIGN(p_wlfs_config,offset);
+	wlfs_config.start = SECTOR_ALIGN(&wlfs_config,offset);
 	wlfs_config.end = boot_part->size-1;
-	wlfs_init(&wlfs_config);
-	memset(data,0,sizeof(data));
-	if ( wlfs_rec_len() ) {
-		printf("Loaded data, LEN = %lu, %s\n",wlfs_load(data),data);
-	}
-	strcat(data,"Hello world! ");
-	wlfs_store(data,strlen( (const char *)data));
 
+   return &wlfs_config;
 }	
 
 

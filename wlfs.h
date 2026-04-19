@@ -1,8 +1,8 @@
 #include <stdint.h>
 // platform independent
 
-#define SECTOR_ALIGN(x,y) (y+x->sector_size-1) & ~(x->sector_size-1)
-#define WRITE_ALIGN(x,y) (y+x->write_align-1) & ~(x->write_align-1)
+#define SECTOR_ALIGN(x,y) (y+x.sector_size-1) & ~(x.sector_size-1)
+#define WRITE_ALIGN(x,y) (y+x.write_align-1) & ~(x.write_align-1)
 
 typedef struct wlfs_config_t {
 	int sector_size;
@@ -19,12 +19,12 @@ typedef struct wlfs_header_t {
 } wlfs_header_t;
 
 
-void wlfs_init( wlfs_config_t *config);
-uint32_t wlfs_rec_len();
-uint32_t wlfs_load(void *dst);
-uint32_t wlfs_store(void *src, uint32_t len);
+uint32_t wlfs_rec_len(); // returns length of the most recent saved block
+uint32_t wlfs_load(void *dst); // load the most recent saved block to the address dst
+uint32_t wlfs_store(void *src, uint32_t len); // save len bytes of memmory starting at address src
 
 // platform specific functions - to be implemented externaly
+wlfs_config_t *wlfs_init(); // init storage - must be called before using other wlfs functions
 uint32_t wlfs_read(uint32_t offset, void *dst, uint32_t len);
 uint32_t wlfs_write(uint32_t offset, const void *src, uint32_t len);
 uint32_t wlfs_erase(uint32_t offset, uint32_t len);

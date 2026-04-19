@@ -11,12 +11,11 @@
 const char zeros[img_sector_size]={0};
 
 wlfs_config_t wlfs_config;
-wlfs_config_t *p_wlfs_config = &wlfs_config;
 
 #define img_len img_sector_size * img_total_sectors + img_file_offset
 char data[img_len];
 
-uint32_t wlfs_open() {
+wlfs_config_t *wlfs_init() {
 	FILE *fd;
 	uint32_t bytes_read = 0;
 	fd = fopen(IMG, "rb");
@@ -28,9 +27,8 @@ uint32_t wlfs_open() {
 	}
 	wlfs_config.sector_size = img_sector_size;
 	wlfs_config.write_align = img_write_align;
-	wlfs_config.start = SECTOR_ALIGN(p_wlfs_config, img_file_offset);
-	wlfs_init(&wlfs_config);
-	return wlfs_config.end;
+	wlfs_config.start = SECTOR_ALIGN(wlfs_config, img_file_offset);
+	return &wlfs_config;
 }
 
 int wlfs_close() {
@@ -66,9 +64,8 @@ uint32_t wlfs_write( uint32_t offset, const void *src, uint32_t len) {
 
 int main( int argc, const char *argv[]) {
 	char buf[8192];
-	wlfs_open();
+	wlfs_init();
 	printf("start offset: %d\nend: %d\nsector size: %d\n",wlfs_config.start,wlfs_config.end,wlfs_config.sector_size);
-	wlfs_init(&wlfs_config);
 	printf("last record len: %d\n", wlfs_rec_len());
 	if (argc == 1) {
 		wlfs_load( (void*)buf);
